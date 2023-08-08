@@ -43,16 +43,16 @@ public class OrderController {
         OrderDto dto = modelMapper.map ( requestOrder, OrderDto.class );
         dto.setUserId ( userId );
         /* JPA */
-//        OrderDto createdOrder = orderService.createOrder ( dto );
-//        ResponseOrder responseUser = modelMapper.map ( createdOrder, ResponseOrder.class );
+        OrderDto createdOrder = orderService.createOrder ( dto );
+        ResponseOrder responseUser = modelMapper.map ( createdOrder, ResponseOrder.class );
         /* kafka */
-        dto.setOrderId ( UUID.randomUUID ( ).toString ( ) );
-        dto.setTotalPrice ( requestOrder.getUnitPrice () * requestOrder.getQty () );
+//        dto.setOrderId ( UUID.randomUUID ( ).toString ( ) );
+//        dto.setTotalPrice ( requestOrder.getUnitPrice () * requestOrder.getQty () );
         /* send this order */
-        kafkaProducer.send ( "example-catalog-topic", dto );
-        orderProducer.send ( "orders", dto );
+//        kafkaProducer.send ( "example-catalog-topic", dto );
+//        orderProducer.send ( "orders", dto );
+//        ResponseOrder responseUser = modelMapper.map ( dto, ResponseOrder.class );
 
-        ResponseOrder responseUser = modelMapper.map ( dto, ResponseOrder.class );
         return ResponseEntity.status ( HttpStatus.CREATED ).body ( responseUser );
     }
 

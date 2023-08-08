@@ -14,11 +14,13 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/mydb
-    username: root
-    password: 1234
-#    password: test1357
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://127.0.0.1:3306/mydb
+#    username: root
+#    password: 1234  #회사용
+#    password: test1357 #집용
 
 eureka:
   instance:
