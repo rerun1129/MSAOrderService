@@ -2,6 +2,8 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
+import com.example.orderservice.messagequeue.KafkaProducer;
+import com.example.orderservice.messagequeue.OrderProducer;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOrder;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ import java.util.List;
 public class OrderController {
     private final Environment environment;
     private final OrderService orderService;
+    private final KafkaProducer kafkaProducer;
+    private final OrderProducer orderProducer;
 
     @GetMapping("/health_check")
     public String status (){
@@ -34,11 +39,20 @@ public class OrderController {
                                                     @RequestBody RequestOrder requestOrder ){
         ModelMapper modelMapper = new ModelMapper ( );
         modelMapper.getConfiguration ( ).setMatchingStrategy ( MatchingStrategies.STRICT );
+
         OrderDto dto = modelMapper.map ( requestOrder, OrderDto.class );
         dto.setUserId ( userId );
-        OrderDto createdOrder = orderService.createOrder ( dto );
+        /* JPA */
+//        OrderDto createdOrder = orderService.createOrder ( dto );
+//        ResponseOrder responseUser = modelMapper.map ( createdOrder, ResponseOrder.class );
+        /* kafka */
+        dto.setOrderId ( UUID.randomUUID ( ).toString ( ) );
+        dto.setTotalPrice ( requestOrder.getUnitPrice () * requestOrder.getQty () );
+        /* send this order */
+        kafkaProducer.send ( "example-catalog-topic", dto );
+        orderProducer.send ( "orders", dto );
 
-        ResponseOrder responseUser = modelMapper.map ( createdOrder, ResponseOrder.class );
+        ResponseOrder responseUser = modelMapper.map ( dto, ResponseOrder.class );
         return ResponseEntity.status ( HttpStatus.CREATED ).body ( responseUser );
     }
 
