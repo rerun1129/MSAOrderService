@@ -32,6 +32,8 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'io.github.qsy7.java.dependencies:javax-validation:0.1.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.3.RELEASE'
     implementation 'com.h2database:h2:1.3.176'
     implementation 'org.modelmapper:modelmapper:2.3.8'
     compileOnly 'org.projectlombok:lombok'
